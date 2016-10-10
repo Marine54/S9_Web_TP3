@@ -13,14 +13,14 @@ function loadXMLDoc() {
         // code for IE7+, Firefox, Chrome, Opera, Safari 
         xmlhttp = new XMLHttpRequest();
     } else {
-        // // code for IE5 and IE6 
+        // code for IE5 and IE6 
         xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
     }
 
     // Things to do when a response arrives 
     xmlhttp.onreadystatechange = function () {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-            showTracks(this);
+            showTracks(this.responseText);
         }
     }
 
@@ -35,9 +35,15 @@ function loadXMLDoc() {
 // Affichage des musiques en fonction du XML reçu de l'API Last.Fm
 function showTracks(xml) {
     var oParser = new DOMParser();
-    var xmldoc = oParser.parseFromString(xml.responseText, "text/xml");
+    var xmldoc = oParser.parseFromString(xml, "text/xml");
 
-    // COostruction du HTML
+    var html = constructionHTML(xmldoc);
+   
+    document.getElementById("results").innerHTML = html;
+}
+
+function constructionHTML(xmldoc) {
+    // Construction du HTML
     var tracks = xmldoc.getElementsByTagName("track");
     var html = "";
     for (i = 0; i < tracks.length; i++) {
@@ -60,8 +66,7 @@ function showTracks(xml) {
 
         html += "</div>";
     }
-   
-
-    document.getElementById("results").innerHTML = html;
+    
+    return html;
 }
 
